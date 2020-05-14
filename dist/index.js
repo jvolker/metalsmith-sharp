@@ -15,7 +15,7 @@ var _path = require("path");
 
 var _lodash = require("lodash");
 
-var _minimatch = _interopRequireDefault(require("minimatch"));
+var _multimatch = _interopRequireDefault(require("multimatch"));
 
 var _debug = _interopRequireDefault(require("debug"));
 
@@ -82,12 +82,22 @@ function _default(userOptions) {
     Object.keys(files).reduce((fileSequence, filename) => {
       return fileSequence.then(() => {
         const file = files[filename];
-        const replacements = getReplacements(filename); // Iterate over all option sets.
+        const replacements = getReplacements(filename); // src pattern will be reset when passing options on per file basis
 
-        return optionsList.reduce((stepSequence, options) => {
-          const stepOptions = _objectSpread({}, defaultOptions, {}, options);
+        if (file.sharp) {
+          file.sharp = [].concat(file.sharp);
+          file.sharp.forEach(function (option) {
+            option.src = filename;
+          });
+        } // combine option sets passed on module call with options given on a per file basis
 
-          if (!(0, _minimatch.default)(filename, stepOptions.src)) {
+
+        const combinedOptionsList = file.sharp ? optionsList.concat(file.sharp) : optionsList; // Iterate over all option sets.
+
+        return combinedOptionsList.reduce((stepSequence, options) => {
+          const stepOptions = _objectSpread(_objectSpread({}, defaultOptions), options);
+
+          if (!(0, _multimatch.default)(filename, stepOptions.src)) {
             return stepSequence;
           }
 
