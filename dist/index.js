@@ -86,9 +86,10 @@ function _default(userOptions) {
 
         if (file.sharp) {
           file.sharp = [].concat(file.sharp);
-          file.sharp.forEach(function (option) {
+
+          for (const option of file.sharp) {
             option.src = filename;
-          });
+          }
         } // combine option sets passed on module call with options given on a per file basis
 
 

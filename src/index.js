@@ -64,9 +64,9 @@ export default function(userOptions) {
           // src pattern will be reset when passing options on per file basis
           if (file.sharp) {
             file.sharp = [].concat(file.sharp)
-            file.sharp.forEach(function (option) {
+            for (const option of file.sharp) {
               option.src = filename
-            })
+            }
           }
 
           // combine option sets passed on module call with options given on a per file basis
